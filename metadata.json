@@ -1,5 +1,6 @@
 {
   "owner": "actions",
   "name": "stale",
-  "visibility": ""
+  "visibility": "internal",
+  "description": "Marks issues and pull requests that have not had recent interaction"
 }

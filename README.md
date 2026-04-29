@@ -1,5 +1,7 @@
 # actions/stale
 
+Marks issues and pull requests that have not had recent interaction
+
 Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/actions/stale](https://github.com/actions/stale).
 
 ## Versions
