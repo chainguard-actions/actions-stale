@@ -1,4 +1,6 @@
 {
-  "upstream": "actions/stale",
-  "version": "v10.2.0"
+  "owner": "actions",
+  "repo": "stale",
+  "version": "",
+  "url": "https://github.com/actions/stale"
 }
