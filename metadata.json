@@ -1,7 +1,0 @@
-{
-  "owner": "actions",
-  "name": "stale",
-  "visibility": "internal",
-  "description": "Marks issues and pull requests that have not had recent interaction",
-  "block_publish": false
-}
