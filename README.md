@@ -1,6 +1,6 @@
 # actions/stale
 
-Marks issues and pull requests that have not had recent interaction
+Close issues and pull requests with no recent activity
 
 Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/actions/stale](https://github.com/actions/stale).
 
