@@ -1,0 +1,28 @@
+name: Test basic stale action usage
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          repo-token: ${{ github.token }}
+          stale-issue-message: 'This issue is stale because it has been open for 60 days with no activity.'
+          stale-pr-message: 'This PR is stale because it has been open for 60 days with no activity.'
+          close-issue-message: 'This issue was closed because it has been stale for 7 days with no activity.'
+          close-pr-message: 'This PR was closed because it has been stale for 7 days with no activity.'
+          close-issue-label: 'closed-stale'
+          close-pr-label: 'closed-stale-pr'
+          days-before-stale: '60'
+          days-before-close: '7'
+          stale-issue-label: 'Stale'
+          stale-pr-label: 'Stale'
+          debug-only: 'true'
+          operations-per-run: '1'
+      - name: Assert action completed successfully
+        run: |
+          echo "Action completed in debug-only mode"
+          echo "PASS"
