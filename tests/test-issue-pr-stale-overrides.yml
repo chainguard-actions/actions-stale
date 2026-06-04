@@ -1,0 +1,22 @@
+name: Test issue and PR stale day overrides
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          repo-token: ${{ github.token }}
+          stale-issue-message: 'This issue is stale.'
+          stale-pr-message: 'This PR is stale.'
+          close-issue-message: 'Closing this stale issue.'
+          close-pr-message: 'Closing this stale PR.'
+          days-before-issue-stale: '45'
+          days-before-pr-stale: '30'
+          debug-only: 'true'
+      - name: Assert action completed
+        run: |
+          echo "PASS: action completed with issue/PR stale day overrides"

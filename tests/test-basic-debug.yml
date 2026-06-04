@@ -15,11 +15,11 @@ jobs:
           days-before-stale: '60'
           days-before-close: '7'
           debug-only: 'true'
-      - name: Assert staled-issues-prs output exists
+      - name: Assert outputs exist
         env:
-          STALED: ${{ steps.action.outputs.staled-issues-prs }}
           CLOSED: ${{ steps.action.outputs.closed-issues-prs }}
+          STALED: ${{ steps.action.outputs.staled-issues-prs }}
         run: |
-          echo "staled-issues-prs: $STALED"
           echo "closed-issues-prs: $CLOSED"
-          echo "PASS: action completed successfully in debug mode"
+          echo "staled-issues-prs: $STALED"
+          echo "PASS: action completed in debug mode"
