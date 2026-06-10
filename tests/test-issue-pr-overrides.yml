@@ -1,4 +1,4 @@
-name: Test stale action with issue and PR specific overrides
+name: Test issue and PR specific overrides
 on:
   workflow_dispatch:
 jobs:
@@ -10,19 +10,21 @@ jobs:
         uses: .
         with:
           repo-token: ${{ github.token }}
-          days-before-issue-stale: '45'
+          days-before-issue-stale: '90'
           days-before-pr-stale: '30'
-          days-before-issue-close: '10'
+          days-before-issue-close: '14'
           days-before-pr-close: '5'
-          stale-issue-message: 'This issue is stale.'
-          stale-pr-message: 'This PR is stale.'
-          close-issue-message: 'Closing this stale issue.'
-          close-pr-message: 'Closing this stale PR.'
           close-issue-label: 'closed-stale'
-          close-pr-label: 'closed-stale'
-          operations-per-run: '1'
+          close-pr-label: 'closed-stale-pr'
+          stale-issue-label: 'Stale'
+          stale-pr-label: 'Stale'
           debug-only: 'true'
-      - name: Assert action completed with overrides
+          operations-per-run: '1'
+      - name: Assert action completed
+        env:
+          STALED: ${{ steps.action.outputs.staled-issues-prs }}
+          CLOSED: ${{ steps.action.outputs.closed-issues-prs }}
         run: |
-          echo "Action completed successfully with issue/PR specific overrides in debug-only mode"
-          echo "PASS"
+          echo "staled-issues-prs: $STALED"
+          echo "closed-issues-prs: $CLOSED"
+          echo "PASS: action completed with issue/PR override inputs"

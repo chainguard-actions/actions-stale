@@ -12,14 +12,23 @@ jobs:
           repo-token: ${{ github.token }}
           stale-issue-message: 'This issue is stale because it has been open 60 days with no activity.'
           stale-pr-message: 'This PR is stale because it has been open 60 days with no activity.'
+          close-issue-message: 'This issue was closed because it has been stale for 7 days with no activity.'
+          close-pr-message: 'This PR was closed because it has been stale for 7 days with no activity.'
           days-before-stale: '60'
           days-before-close: '7'
+          stale-issue-label: 'Stale'
+          stale-pr-label: 'Stale'
           debug-only: 'true'
-      - name: Assert outputs exist
+          operations-per-run: '1'
+      - name: Assert staled-issues-prs output exists
         env:
-          CLOSED: ${{ steps.action.outputs.closed-issues-prs }}
           STALED: ${{ steps.action.outputs.staled-issues-prs }}
         run: |
-          echo "closed-issues-prs: $CLOSED"
           echo "staled-issues-prs: $STALED"
-          echo "PASS: action completed in debug mode"
+          echo "PASS: action completed successfully in debug mode"
+      - name: Assert closed-issues-prs output exists
+        env:
+          CLOSED: ${{ steps.action.outputs.closed-issues-prs }}
+        run: |
+          echo "closed-issues-prs: $CLOSED"
+          echo "PASS: action completed successfully in debug mode"
