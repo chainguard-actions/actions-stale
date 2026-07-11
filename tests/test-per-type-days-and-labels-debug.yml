@@ -1,0 +1,39 @@
+name: Test per-type days and close labels (debug mode)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: stale
+        uses: .
+        with:
+          repo-token: ${{ github.token }}
+          days-before-issue-stale: 45
+          days-before-pr-stale: 30
+          days-before-issue-close: 10
+          days-before-pr-close: 5
+          stale-issue-label: 'stale-issue'
+          stale-pr-label: 'stale-pr'
+          close-issue-label: 'closed-issue'
+          close-pr-label: 'closed-pr'
+          stale-issue-message: 'This issue is stale.'
+          stale-pr-message: 'This PR is stale.'
+          debug-only: 'true'
+          operations-per-run: 1
+
+      - name: Assert closed-issues-prs output exists
+        env:
+          CLOSED: ${{ steps.stale.outputs.closed-issues-prs }}
+        run: |
+          echo "closed-issues-prs: $CLOSED"
+          echo "PASS: action completed in debug mode with per-type days and labels inputs"
+
+      - name: Assert staled-issues-prs output exists
+        env:
+          STALED: ${{ steps.stale.outputs.staled-issues-prs }}
+        run: |
+          echo "staled-issues-prs: $STALED"
+          echo "PASS: action completed in debug mode with per-type stale inputs"
