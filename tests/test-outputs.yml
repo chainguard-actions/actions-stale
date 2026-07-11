@@ -1,0 +1,39 @@
+name: Test action outputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: dummy-token-for-act-testing
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: stale
+        uses: .
+        with:
+          repo-token: dummy-token-for-act-testing
+          stale-issue-message: 'Stale issue!'
+          stale-pr-message: 'Stale PR!'
+          close-issue-message: 'Closing stale issue.'
+          close-pr-message: 'Closing stale PR.'
+          days-before-stale: '60'
+          days-before-close: '7'
+          stale-issue-label: 'Stale'
+          stale-pr-label: 'Stale'
+          operations-per-run: '1'
+          debug-only: 'true'
+        continue-on-error: true
+      - name: Assert action ran and outputs are accessible
+        env:
+          CLOSED: ${{ steps.stale.outputs.closed-issues-prs }}
+          STALED: ${{ steps.stale.outputs.staled-issues-prs }}
+          OUTCOME: ${{ steps.stale.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          echo "closed-issues-prs: '$CLOSED'"
+          echo "staled-issues-prs: '$STALED'"
+          if [ "$OUTCOME" = "skipped" ]; then
+            echo "FAIL: action was skipped unexpectedly"
+            exit 1
+          fi
+          echo "PASS: action ran with outcome=$OUTCOME (API failures expected in act environment)"

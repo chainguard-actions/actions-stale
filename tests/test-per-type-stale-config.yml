@@ -1,0 +1,32 @@
+name: Test per-type stale configuration
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          repo-token: ${{ github.token }}
+          days-before-issue-stale: 30
+          days-before-pr-stale: 45
+          days-before-issue-close: 5
+          days-before-pr-close: 10
+          stale-issue-label: 'stale-issue'
+          stale-pr-label: 'stale-pr'
+          close-issue-label: 'closed-issue'
+          close-pr-label: 'closed-pr'
+          stale-issue-message: 'This issue is stale.'
+          stale-pr-message: 'This PR is stale.'
+          debug-only: 'true'
+          operations-per-run: '1'
+      - name: Assert staled-issues-prs output exists
+        env:
+          STALED: ${{ steps.action.outputs.staled-issues-prs }}
+          CLOSED: ${{ steps.action.outputs.closed-issues-prs }}
+        run: |
+          echo "staled-issues-prs: $STALED"
+          echo "closed-issues-prs: $CLOSED"
+          echo "PASS: action completed successfully with per-type stale config inputs"

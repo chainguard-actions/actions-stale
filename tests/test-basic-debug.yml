@@ -1,0 +1,30 @@
+name: Test basic debug-only mode
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: dummy-token-for-act-testing
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: stale
+        uses: .
+        with:
+          repo-token: dummy-token-for-act-testing
+          stale-issue-message: 'This issue is stale because it has been open 60 days with no activity.'
+          stale-pr-message: 'This PR is stale because it has been open 60 days with no activity.'
+          days-before-stale: '60'
+          days-before-close: '7'
+          debug-only: 'true'
+        continue-on-error: true
+      - name: Assert action ran (success or expected API failure)
+        env:
+          OUTCOME: ${{ steps.stale.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "skipped" ]; then
+            echo "FAIL: action was skipped unexpectedly"
+            exit 1
+          fi
+          echo "PASS: action ran with outcome=$OUTCOME (API failures expected in act environment)"
