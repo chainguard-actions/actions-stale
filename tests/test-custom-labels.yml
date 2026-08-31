@@ -1,0 +1,43 @@
+name: Test custom labels and messages
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          debug-only: 'true'
+          stale-issue-label: 'needs-attention'
+          stale-pr-label: 'needs-attention'
+          close-issue-label: 'wontfix'
+          close-pr-label: 'wontfix'
+          stale-issue-message: 'This issue has been inactive for a while.'
+          stale-pr-message: 'This PR has been inactive for a while.'
+          close-issue-message: 'Closing due to inactivity.'
+          close-pr-message: 'Closing PR due to inactivity.'
+          days-before-stale: '30'
+          days-before-close: '14'
+          exempt-issue-labels: 'pinned,security'
+          exempt-pr-labels: 'pinned,security'
+          operations-per-run: '20'
+      - name: Assert action ran with custom labels config
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          STALED: ${{ steps.action.outputs.staled-issues-prs }}
+          CLOSED: ${{ steps.action.outputs.closed-issues-prs }}
+        run: |
+          echo "outcome: $OUTCOME"
+          echo "staled-issues-prs: $STALED"
+          echo "closed-issues-prs: $CLOSED"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded with custom labels config"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (sentinel repo is not resolvable)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi

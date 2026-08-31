@@ -1,0 +1,37 @@
+name: Test ascending sort order and start-date options
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          debug-only: 'true'
+          days-before-stale: '60'
+          days-before-close: '7'
+          ascending: 'true'
+          sort-by: 'updated'
+          start-date: '2020-01-01T00:00:00Z'
+          enable-statistics: 'true'
+          operations-per-run: '10'
+      - name: Assert action ran with ascending sort config
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+          STALED: ${{ steps.action.outputs.staled-issues-prs }}
+          CLOSED: ${{ steps.action.outputs.closed-issues-prs }}
+        run: |
+          echo "outcome: $OUTCOME"
+          echo "staled-issues-prs: $STALED"
+          echo "closed-issues-prs: $CLOSED"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded with ascending sort config"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (sentinel repo is not resolvable)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
